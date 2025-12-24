@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AuthController;
 
 
 
@@ -23,9 +24,19 @@ Route::get('/contact-us', [HomeController::class, 'contact_us'])->name('contact.
 
 
 
+
 // admin
 Route::prefix('admin')->group(function () {
 
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'login'])
+        ->name('login.submit');
+
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
+        
     Route::get('/dashboard', [AdminController::class, 'index'])
         ->name('dashboard.admin');
 
@@ -44,4 +55,3 @@ Route::prefix('admin')->group(function () {
     Route::post('/manage-banners/status', [AdminController::class, 'toggleStatus'])
         ->name('banner.toggle.status');
 });
-

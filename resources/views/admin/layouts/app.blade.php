@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/kaiadmin.min.css') }}" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="{{asset('admin/assets/css/demo.css')}}" />
     <style>
         .banner-img {
             opacity: 0;
