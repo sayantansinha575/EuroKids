@@ -50,7 +50,7 @@
                                       </a>
                                   </li>
                                   <li>
-                                      <a href="components/buttons.html">
+                                      <a href="{{route('testimonials.admin')}}">
                                           <span class="sub-item">Testimonials</span>
                                       </a>
                                   </li>

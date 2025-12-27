@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Banner;
 
 class HomeController extends Controller
 {
    function index_landing()
    {
-      return view('home');
+
+      $banners = Banner::where('is_active', 1)->orderBy('id', 'ASC')->get();
+
+      return view('home', compact('banners'));
    }
 
 
@@ -41,7 +45,7 @@ class HomeController extends Controller
       return view('programs.eurosenior');
    }
 
-   function contact_us() 
+   function contact_us()
    {
       return view('contact_us');
    }

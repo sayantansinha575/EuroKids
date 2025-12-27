@@ -7,11 +7,11 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
                     {{-- <h4 class="card-title">Banners</h4> --}}
                     <div class="ms-md-auto py-2 py-md-0">
-                        <button class="btn btn-secondary" id="addBannerBtn">
+                        <button class="btn btn-secondary" id="addTestimonialBtn">
                             <span class="btn-label">
                                 <i class="fa fa-plus"></i>
                             </span>
-                            Add Banner
+                            Add Testimonial
                         </button>
                     </div>
                 </div>
@@ -22,10 +22,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Title</th>
-                                <th>Subtitle</th>
-                                <th>Description</th>
-                                <th>Image</th>
+                                <th>PARENT NAME</th>
+                                <th>PARERNT IMAGE</th>
+                                <th>CHILD NAME</th>
+                                <th>MESSAGE</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -93,7 +93,7 @@
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Banner</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Testimonial</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -102,7 +102,7 @@
                         @csrf
                         <input type="hidden" name="id">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
+                            <label for="title" class="form-label">Parent Name</label>
                             <input id="title" name="title" type="text" class="form-control"
                                 value="{{ old('title') }}">
                             @error('title')
@@ -111,7 +111,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="subtitle" class="form-label">Subtitle</label>
+                            <label for="subtitle" class="form-label">Child Name</label>
                             <input id="subtitle" name="subtitle" type="text" class="form-control"
                                 value="{{ old('subtitle') }}">
                             @error('subtitle')
@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">Message</label>
                             <textarea id="description" name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
@@ -128,7 +128,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="image" class="form-label">Image</label>
+                            <label for="image" class="form-label">Parent Image</label>
                             <input id="image" name="image" type="file" class="form-control">
                             <div id="imagePreviewWrapper" class="mt-2"></div>
                             @error('image')
@@ -192,7 +192,7 @@
         $(function() {
             $("#basic-datatables").DataTable({});
 
-            $(document).on('click', '#addBannerBtn, .add-banner-btn', function(e) {
+            $(document).on('click', '#addTestimonialBtn, .add-banner-btn', function(e) {
                 e.preventDefault();
 
                 resetBannerForm();
@@ -420,8 +420,7 @@
 
                         previewContainer.append(img);
                     }
-
-                    $('#exampleModalLabel').text('Update Banner');
+                    $('#exampleModalLabel').text('Update Testimonial');
                     // open modal
                     $('#bannerModal').modal('show');
                 },

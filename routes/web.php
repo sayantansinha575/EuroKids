@@ -21,22 +21,22 @@ Route::prefix('programs')->group(function () {
 });
 Route::get('/contact-us', [HomeController::class, 'contact_us'])->name('contact.us');
 
-
-
-
-
-// admin
+// admin auth
 Route::prefix('admin')->group(function () {
-
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
 
-    Route::post('/login', [AuthController::class, 'login'])
+    Route::post('/login-action', [AuthController::class, 'login'])
         ->name('login.submit');
+});
 
-    Route::post('/logout', [AuthController::class, 'logout'])
+
+// admin
+Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
+
+    Route::get('/logout', [AuthController::class, 'logout'])
         ->name('logout');
-        
+
     Route::get('/dashboard', [AdminController::class, 'index'])
         ->name('dashboard.admin');
 
@@ -54,4 +54,7 @@ Route::prefix('admin')->group(function () {
 
     Route::post('/manage-banners/status', [AdminController::class, 'toggleStatus'])
         ->name('banner.toggle.status');
+
+    Route::get('/manage-testimonials', [AdminController::class, 'manage_testimonials'])
+        ->name('testimonials.admin');
 });

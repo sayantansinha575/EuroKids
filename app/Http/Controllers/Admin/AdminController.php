@@ -132,4 +132,9 @@ class AdminController extends Controller
             'message' => 'Banner deleted successfully.'
         ]);
     }
+
+    public function manage_testimonials()
+    {
+        return view('admin.testimonials');
+    }
 }
