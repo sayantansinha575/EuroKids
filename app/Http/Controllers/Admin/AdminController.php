@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -135,6 +136,119 @@ class AdminController extends Controller
 
     public function manage_testimonials()
     {
-        return view('admin.testimonials');
+        $testimonials = Testimonial::orderBy('id', 'DESC')->get();
+
+        return view('admin.testimonials', compact('testimonials'));
+    }
+
+    public function store_testimonials(Request $request)
+    {
+        try {
+            // -----------------------------
+            // Create OR Update
+            // -----------------------------
+            if ($request->filled('id')) {
+                $testimonial = Testimonial::find($request->id);
+
+                if (! $testimonial) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Testimonial not found.'
+                    ], 404);
+                }
+
+                $action = 'updated';
+            } else {
+                $testimonial = new Testimonial();
+                $action = 'created';
+            }
+
+            // -----------------------------
+            // Assign fields
+            // -----------------------------
+            $testimonial->parent_name       = $request->parent_name;
+            $testimonial->child_name    = $request->child_name;
+            $testimonial->message = $request->message;
+            $testimonial->is_active =   $request->is_status;
+
+            // -----------------------------
+            // Image upload
+            // -----------------------------
+            if ($request->hasFile('parent_image')) {
+
+                // delete old image if exists (update case)
+                if ($testimonial->image && Storage::disk('public')->exists('testimonials/' . $testimonial->image)) {
+                    Storage::disk('public')->delete('testimonials/' . $testimonial->image);
+                }
+
+                // generate unique name
+                $imageName = time() . '_' . uniqid() . '.' .
+                    $request->file('parent_image')->getClientOriginalExtension();
+
+                // store image
+                $request->file('parent_image')->storeAs('testimonials', $imageName, 'public');
+
+                $testimonial->parent_image = $imageName;
+            }
+
+            // -----------------------------
+            // Save
+            // -----------------------------
+            $testimonial->save();
+
+            return response()->json([
+                'status'  => true,
+                'message' => "Testimonial {$action} successfully.",
+                'data'    => $testimonial
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Something went wrong.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show_testimonial($id)
+    {
+        $testimonial = Testimonial::findOrFail($id);
+
+        return response()->json($testimonial);
+    }
+
+    public function toggleStatus_testimonial(Request $request)
+    {
+        $testimonial = Testimonial::findOrFail($request->id);
+
+        // toggle status
+        $testimonial->is_active = $testimonial->is_active == 1 ? 0 : 1;
+        $testimonial->save();
+
+        return response()->json([
+            'status' => true,
+            'new_status' => $testimonial->is_active,
+            'message' => $testimonial->is_active
+                ? 'Testimonial activated successfully'
+                : 'Testimonial deactivated successfully'
+        ]);
+    }
+
+    public function destroy_testimonial($id)
+    {
+        $testimonial = Testimonial::findOrFail($id);
+
+        // delete image from storage if exists
+        if ($testimonial->parent_image && Storage::disk('public')->exists('testimonials/' . $testimonial->parent_image)) {
+            Storage::disk('public')->delete('testimonials/' . $testimonial->parent_image);
+        }
+
+        // delete banner record
+        $testimonial->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Testimonial deleted successfully.'
+        ]);
     }
 }

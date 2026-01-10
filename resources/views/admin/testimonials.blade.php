@@ -23,28 +23,29 @@
                             <tr>
                                 <th>#</th>
                                 <th>PARENT NAME</th>
-                                <th>PARERNT IMAGE</th>
                                 <th>CHILD NAME</th>
                                 <th>MESSAGE</th>
+                                <th>IMAGE</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (!empty($banners))
+                            @if (!empty($testimonials))
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach ($banners as $item)
+                                @foreach ($testimonials as $item)
                                     <tr>
                                         <td>{{ $i++ }}</td>
-                                        <td>{{ $item->title }}</td>
-                                        <td>{{ $item->subtitle }}</td>
-                                        <td>{{ $item->description }}</td>
+                                        <td>{{ $item->parent_name }}</td>
+                                        <td>{{ $item->child_name }}</td>
+                                        <td>{{ $item->message }}</td>
                                         <td>
-                                            <a href="{{ asset('storage/banners/' . $item->image) }}">
-                                                <img loading="lazy" src="{{ asset('storage/banners/' . $item->image) }}"
-                                                    width="60" alt="{{ $item->image }}" class="banner-img">
+                                            <a href="{{ asset('storage/testimonials/' . $item->parent_image) }}">
+                                                <img loading="lazy"
+                                                    src="{{ asset('storage/testimonials/' . $item->parent_image) }}"
+                                                    width="60" alt="{{ $item->parent_image }}" class="banner-img">
                                             </a>
                                         </td>
                                         <td class="text-end">
@@ -64,14 +65,13 @@
                                             <div class="row gap-3">
                                                 <div class="col-md-2">
                                                     <a href="javascript:void(0)"
-                                                        data-url="{{ route('manage.banner', $item->id) }}"
+                                                        data-url="{{ route('manage.testimonial', $item->id) }}"
                                                         class="btn btn-secondary btn_edit btn-sm">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <a href="javascript:void(0)"
-                                                        data-url="{{ route('delete.banner', $item->id) }}"
+                                                    <a href="javascript:void(0)" data-url="{{route('delete.testimonial',$item->id)}}"
                                                         class="btn btn-danger btn_delete btn-sm">
                                                         <i class="fas fa-trash"></i>
                                                     </a>
@@ -97,14 +97,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="bannerForm" method="POST" action="{{ route('banner.store') }}"
+                    <form id="bannerForm" method="POST" action="{{ route('testimonials.store') }}"
                         enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id">
                         <div class="mb-3">
                             <label for="title" class="form-label">Parent Name</label>
-                            <input id="title" name="title" type="text" class="form-control"
-                                value="{{ old('title') }}">
+                            <input id="parent_name" name="parent_name" type="text" class="form-control"
+                                value="{{ old('parent_name') }}">
                             @error('title')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -112,8 +112,8 @@
 
                         <div class="mb-3">
                             <label for="subtitle" class="form-label">Child Name</label>
-                            <input id="subtitle" name="subtitle" type="text" class="form-control"
-                                value="{{ old('subtitle') }}">
+                            <input id="child_name" name="child_name" type="text" class="form-control"
+                                value="{{ old('child_name') }}">
                             @error('subtitle')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -121,7 +121,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Message</label>
-                            <textarea id="description" name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
+                            <textarea id="message" name="message" rows="4" class="form-control">{{ old('message') }}</textarea>
                             @error('description')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -129,7 +129,7 @@
 
                         <div class="mb-3">
                             <label for="image" class="form-label">Parent Image</label>
-                            <input id="image" name="image" type="file" class="form-control">
+                            <input id="parent_image" name="parent_image" type="file" class="form-control">
                             <div id="imagePreviewWrapper" class="mt-2"></div>
                             @error('image')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
@@ -214,23 +214,23 @@
 
             $("#bannerForm").validate({
                 rules: {
-                    title: {
+                    parent_name: {
                         required: true,
                         maxlength: 191
                     },
-                    subtitle: {
+                    child_name: {
                         required: true,
                         maxlength: 191
                     },
-                    description: {
+                    message: {
                         required: true
                     },
-                    image: {
+                    parent_image: {
                         required: function() {
                             // image required ONLY when id is empty (ADD)
                             return $('#bannerForm input[name="id"]').val() === '';
                         },
-                        extension: "jpg|jpeg|png|gif",
+                        extension: "jpg|jpeg|png|gif|webp",
                         filesize: 2 * 1024 * 1024 // 2 MB
                     },
                     is_status: {
@@ -238,18 +238,18 @@
                     }
                 },
                 messages: {
-                    title: {
-                        required: "Please enter a title."
+                    parent_name: {
+                        required: "Please enter a Parent Name."
                     },
-                    subtitle: {
-                        required: "Please enter a Subtitle."
+                    child_name: {
+                        required: "Please enter a Child Name."
                     },
-                    description: {
-                        required: "Please enter a description."
+                    message: {
+                        required: "Please enter a Message."
                     },
-                    image: {
+                    parent_image: {
                         required: "Please select a image.",
-                        extension: "Allowed file types: jpg, jpeg, png, gif.",
+                        extension: "Allowed file types: jpg, jpeg, png, gif, webp.",
                         filesize: "Image must be 2 MB or smaller."
                     },
                 },
@@ -395,9 +395,9 @@
 
                     // fill form fields
                     $('#bannerForm input[name="id"]').val(resp.id);
-                    $('#bannerForm input[name="title"]').val(resp.title);
-                    $('#bannerForm input[name="subtitle"]').val(resp.subtitle);
-                    $('#bannerForm textarea[name="description"]').val(resp.description);
+                    $('#bannerForm input[name="parent_name"]').val(resp.parent_name);
+                    $('#bannerForm input[name="child_name"]').val(resp.child_name);
+                    $('#bannerForm textarea[name="message"]').val(resp.message);
                     $('#bannerForm select[name="is_status"]').val(resp.is_active);
 
 
@@ -407,9 +407,10 @@
                     // remove old preview if exists
                     previewContainer.find('img').remove();
 
-                    if (resp.image) {
+                    if (resp.parent_image) {
                         let img = $('<img>', {
-                            src: '/storage/banners/' + resp.image,
+                            src: '{{ asset('storage/testimonials') }}' + '/' + resp
+                                .parent_image,
                             id: 'imagePreview',
                             class: 'img-thumbnail mt-2',
                             css: {
@@ -460,7 +461,7 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('banner.toggle.status') }}",
+                    url: "{{ route('testimonial.toggle.status') }}",
                     type: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",

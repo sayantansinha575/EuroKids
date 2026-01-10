@@ -409,7 +409,7 @@
 
                     if (resp.image) {
                         let img = $('<img>', {
-                            src: '/storage/banners/' + resp.image,
+                            src: '{{ asset('storage/banners') }}' + '/' + resp.image,
                             id: 'imagePreview',
                             class: 'img-thumbnail mt-2',
                             css: {

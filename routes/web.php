@@ -57,4 +57,16 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
 
     Route::get('/manage-testimonials', [AdminController::class, 'manage_testimonials'])
         ->name('testimonials.admin');
+
+    Route::post('/manage-testimonials/store', [AdminController::class, 'store_testimonials'])
+        ->name('testimonials.store');
+
+    Route::get('/manage-testimonials/{id}', [AdminController::class, 'show_testimonial'])
+        ->name('manage.testimonial');
+
+    Route::post('/manage-testimonials/status', [AdminController::class, 'toggleStatus_testimonial'])
+        ->name('testimonial.toggle.status');
+
+    Route::delete('/manage-testimonials/{id}', [AdminController::class, 'destroy_testimonial'])
+        ->name('delete.testimonial');
 });
